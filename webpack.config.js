@@ -1,13 +1,29 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
+const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
 module.exports = {
   mode: "development",
-  entry: path.resolve(__dirname, './src/index'),
+  entry: {
+    app: {
+      import: path.resolve(__dirname, './src/index'),
+      dependOn: 'shared',
+    } ,
+    user: {
+      import: path.resolve(__dirname, './src/User'),
+      dependOn: 'shared',
+    },
+    shared: path.resolve(__dirname, './src/common'),
+  },
   output: {
     filename: '[name].[hash:8].js',
     path: path.resolve(__dirname, './out'),
     // 之前还需要一个插件，清理dist打包文件
     clean: true,
+    publicPath: '/'
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    static: './dist'
   },
   module: {
     rules: [
@@ -60,10 +76,15 @@ module.exports = {
       }
     ]
   },
+  // optimization: {
+  //   splitChunks: { chunks: "all" },
+  //   runtimeChunk: { name: "runtime" },
+  // },
   plugins: [
     // 自动引入打包好的js和css文件
     new htmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html')
-    })
+    }),
+    new WebpackManifestPlugin(),
   ]
 }
