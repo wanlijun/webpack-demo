@@ -1,19 +1,12 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
-const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { BundleStatsWebpackPlugin } = require('bundle-stats-webpack-plugin');
+
 module.exports = {
-  mode: "development",
-  entry: {
-    app: {
-      import: path.resolve(__dirname, './src/index'),
-      dependOn: 'shared',
-    } ,
-    user: {
-      import: path.resolve(__dirname, './src/User'),
-      dependOn: 'shared',
-    },
-    shared: path.resolve(__dirname, './src/common'),
-  },
+  mode: "production",
+  entry: path.resolve(__dirname, './src/index'),
   output: {
     filename: '[name].[hash:8].js',
     path: path.resolve(__dirname, './out'),
@@ -76,15 +69,20 @@ module.exports = {
       }
     ]
   },
-  // optimization: {
-  //   splitChunks: { chunks: "all" },
-  //   runtimeChunk: { name: "runtime" },
-  // },
+  optimization: {
+    splitChunks:  {
+      chunks: 'all'
+    }
+  },
   plugins: [
     // 自动引入打包好的js和css文件
     new htmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html')
     }),
     new WebpackManifestPlugin(),
+    // new BundleAnalyzerPlugin(),
+    new BundleStatsWebpackPlugin({
+      baseline: true
+    })
   ]
 }
