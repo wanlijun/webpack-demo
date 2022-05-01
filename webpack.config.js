@@ -8,7 +8,7 @@ module.exports = {
   mode: "production",
   entry: path.resolve(__dirname, './src/index'),
   output: {
-    filename: '[name].[hash:8].js',
+    filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, './out'),
     // 之前还需要一个插件，清理dist打包文件
     clean: true,
@@ -70,8 +70,16 @@ module.exports = {
     ]
   },
   optimization: {
+   moduleIds: 'deterministic',
+    runtimeChunk: 'single',
     splitChunks:  {
-      chunks: 'all'
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        }
+      }
     }
   },
   plugins: [
