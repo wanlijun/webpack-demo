@@ -3,20 +3,28 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const { BundleStatsWebpackPlugin } = require('bundle-stats-webpack-plugin');
+const webpack = require('webpack');
+const { web } = require('webpack');
 
 module.exports = {
-  mode: "production",
-  entry: path.resolve(__dirname, './src/index'),
+  mode: "development",
+  entry: {
+    app: path.resolve(__dirname, './src/index'),
+    hot: 'webpack/hot/dev-server.js',
+    client: 'webpack-dev-server/client/index.js?hot=true&live-reload=true'
+  },
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, './out'),
     // 之前还需要一个插件，清理dist打包文件
     clean: true,
-    publicPath: '/'
+    publicPath: '/',
   },
   devtool: 'inline-source-map',
   devServer: {
-    static: './dist'
+    static: './dist',
+    hot: false,
+    client: false,
   },
   module: {
     rules: [
@@ -24,7 +32,7 @@ module.exports = {
         test: /.less$/,
         // style-loader 添加css到dom元素上
         // css-loader 处理css文件
-        
+
         use: [
           'style-loader',
           {
@@ -70,9 +78,9 @@ module.exports = {
     ]
   },
   optimization: {
-   moduleIds: 'deterministic',
+    moduleIds: 'deterministic',
     runtimeChunk: 'single',
-    splitChunks:  {
+    splitChunks: {
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
@@ -87,10 +95,11 @@ module.exports = {
     new htmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html')
     }),
-    new WebpackManifestPlugin(),
+    // new WebpackManifestPlugin(),
     // new BundleAnalyzerPlugin(),
-    new BundleStatsWebpackPlugin({
-      baseline: true
-    })
+    // new BundleStatsWebpackPlugin({
+    //   baseline: true
+    // }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 }
