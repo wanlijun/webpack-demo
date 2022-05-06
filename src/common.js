@@ -1,8 +1,6 @@
-function Hello() {
+export function hello() {
   console.log('hi hi')
 }
-const number = 0
-module.exports = {
-  number,
-  Hello
+export function message() {
+  console.log('hi message')
 }

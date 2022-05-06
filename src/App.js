@@ -1,11 +1,12 @@
 // TODO如何配置才能消除这句
 import React from 'react';
-import _ from './common';
+import { hello } from './common';
+import './index.less';
+const name = 'common'
+const { message } = require('./' + name + '.js');
+
 const App = () => {
-  import('./common')
-    .then((obj) => {
-      console.log(obj)
-    });
-  return <div>Apph1111111111111</div>
+  message()
+  return <div className="hello">Apph1111111111111</div>
 }
 export default App

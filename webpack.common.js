@@ -1,26 +1,12 @@
 const path = require('path');
-const htmlWebpackPlugin = require('html-webpack-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const { BundleStatsWebpackPlugin } = require('bundle-stats-webpack-plugin');
-const webpack = require('webpack');
-const { web } = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: "development",
-  entry: {
-    app: path.resolve(__dirname, './src/index'),
-  },
+  entry: './src/index.js',
   output: {
-    filename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, './out'),
-    // 之前还需要一个插件，清理dist打包文件
-    clean: true,
-    publicPath: '/',
-  },
-  devtool: 'inline-source-map',
-  devServer: {
-    static: './dist',
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true
   },
   module: {
     rules: [
@@ -73,36 +59,9 @@ module.exports = {
       }
     ]
   },
-  optimization: {
-    moduleIds: 'deterministic',
-    runtimeChunk: 'single',
-    usedExports: true,
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        }
-      }
-    }
-  },
-  stats: {
-    // Examine all modules
-    // maxModules: Infinity,
-    // Display bailout reasons
-    // optimizationBailout: true,
-  },
   plugins: [
-    // 自动引入打包好的js和css文件
-    new htmlWebpackPlugin({
-      template: path.resolve(__dirname, './public/index.html')
-    }),
-    // new WebpackManifestPlugin(),
-    // new BundleAnalyzerPlugin(),
-    // new BundleStatsWebpackPlugin({
-    //   baseline: true
-    // }),
-    new webpack.HotModuleReplacementPlugin()
+    new HtmlWebpackPlugin({
+      title: 'Production'
+    })
   ]
 }
